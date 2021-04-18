@@ -1,83 +1,72 @@
-import { Injectable } from '@angular/core';
-
-export interface Message {
-  fromName: string;
-  subject: string;
-  date: string;
-  id: number;
-  read: boolean;
-}
+import { Injectable, Inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { environment } from './../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
-  public messages: Message[] = [
-    {
-      fromName: 'Matt Chorsey',
-      subject: 'New event: Trip to Vegas',
-      date: '9:32 AM',
-      id: 0,
-      read: false
-    },
-    {
-      fromName: 'Lauren Ruthford',
-      subject: 'Long time no chat',
-      date: '6:12 AM',
-      id: 1,
-      read: false
-    },
-    {
-      fromName: 'Jordan Firth',
-      subject: 'Report Results',
-      date: '4:55 AM',
-      id: 2,
-      read: false
-    },
-    {
-      fromName: 'Bill Thomas',
-      subject: 'The situation',
-      date: 'Yesterday',
-      id: 3,
-      read: false
-    },
-    {
-      fromName: 'Joanne Pollan',
-      subject: 'Updated invitation: Swim lessons',
-      date: 'Yesterday',
-      id: 4,
-      read: false
-    },
-    {
-      fromName: 'Andrea Cornerston',
-      subject: 'Last minute ask',
-      date: 'Yesterday',
-      id: 5,
-      read: false
-    },
-    {
-      fromName: 'Moe Chamont',
-      subject: 'Family Calendar - Version 1',
-      date: 'Last Week',
-      id: 6,
-      read: false
-    },
-    {
-      fromName: 'Kelly Richardson',
-      subject: 'Placeholder Headhots',
-      date: 'Last Week',
-      id: 7,
-      read: false
-    }
-  ];
+  dataGrillaGlobal: any[];
+  constructor(
+    private http: HttpClient,    
+  ) {}
 
-  constructor() { }
-
-  public getMessages(): Message[] {
-    return this.messages;
+  //realiza el logueo de la aplicacion
+  public login(userName: string = '', password: string = '', app: string = 'APP_BCK'): any {
+    let headers: any = new HttpHeaders({
+      'Content-Type': 'application/json',
+      password: password,
+      app: app,
+    });
+    return this.http
+      .put(
+        `${environment.apiPath}${userName}`,
+        {},
+        { headers: headers }
+      )
+      .pipe(map((response) => response));
   }
 
-  public getMessageById(id: number): Message {
-    return this.messages[id];
+  //Obtiene el set de registros
+  public getList( email: string, app: string, token: string, adminemail: string, current: boolean = true): any {
+    let headers: any = new HttpHeaders({
+      'Content-Type': 'application/json',
+      email,
+      app,
+      token,
+      adminemail,
+    });
+    return this.http
+      .get(
+        `${environment.apiPath}contacto%40tuten.cl/bookings?current=${current}`,
+        { headers: headers }
+      )
+      .pipe(map((response) => response));
+  }
+
+  //filtra los reistros segun lo que desee el usuario
+  public filter(type: string, value: number): any[] {
+    
+    let response = this.dataGrillaGlobal.filter((row) => {
+      console.log(row);
+      
+      console.log(row.bookingId.toString().includes(value));
+      switch (type) {
+        case 'igual':
+          return row.bookingPrice === value;
+        case 'mayor':
+          return row.bookingPrice > value;
+        case 'menor':
+          return row.bookingPrice < value;
+        case 'like':
+          return row.bookingId.toString().includes(value);
+      }
+    });
+    return response;
+  }
+
+  public logout() {
+    localStorage.removeItem('dataSesion');
   }
 }

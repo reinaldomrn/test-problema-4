@@ -1,0 +1,16 @@
+<!-- <ion-item *ngIf="message" [routerLink]="'/message/' + message.id" [detail]="false">  -->
+  <ion-item [detail]="false">
+  <ion-label class="ion-text-wrap">
+    <h2>
+      {{ row.bookingId }}
+      <span class="date">
+        <ion-note>${{ row.bookingPrice | number: '3.0' }}</ion-note>
+        <ion-icon name="chevron-forward" size="small" *ngIf="isIos()"></ion-icon>
+      </span>
+    </h2>
+    <h3>{{ row.streetAddress }}</h3>
+    <p>
+      {{ row.firstName }} {{ row.lastName }} - {{ row.bookingTime }}
+    </p>
+  </ion-label>
+  </ion-item>

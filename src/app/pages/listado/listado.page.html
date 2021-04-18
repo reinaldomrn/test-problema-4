@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar class="green">
+    <ion-title>
+      Listado de Reservas
+    </ion-title>
+    <ion-icon (click)="logout()" class="ion-padding text-20" name="exit-outline" slot="end"></ion-icon>
+  </ion-toolbar>
+  <ion-toolbar>    
+    <ion-select [(ngModel)]="type" name="type" (ionChange)="filter()" placeholder="Seleccione..">
+      <ion-select-option value="like">Booking Id</ion-select-option>
+      <ion-select-option value="igual">Igual Precio</ion-select-option>
+      <ion-select-option value="mayor">Mayor Precio</ion-select-option>
+      <ion-select-option value="menor">Menor Precio</ion-select-option>
+    </ion-select>
+    <ion-item>
+      <ion-input [(ngModel)]="value" (keyup)="filter()" placeholder="Buscar"></ion-input>
+    </ion-item>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="false" class="ion-padding ion-center ion-text-center">
+  <ion-list>    
+    <app-message *ngFor="let item of dataGrillaLocal" [row]="item"></app-message>
+  </ion-list>
+</ion-content> 
